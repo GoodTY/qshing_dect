@@ -13,7 +13,7 @@ class MyHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Flutter Demo Home Page')),
+      appBar: AppBar(title: const Text('QR Scan')),
       body: Center(
         child: ElevatedButton(
           onPressed: () {
@@ -21,7 +21,7 @@ class MyHome extends StatelessWidget {
               builder: (context) => const QRViewExample(),
             ));
           },
-          child: const Text('qrView'),
+          child: const Text('Scan'),
         ),
       ),
     );
@@ -54,6 +54,9 @@ class _QRViewExampleState extends State<QRViewExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('QR Scaning'),
+      ),
       body: Column(
         children: <Widget>[
           Expanded(flex: 4, child: _buildQrView(context)),
@@ -66,7 +69,8 @@ class _QRViewExampleState extends State<QRViewExample> {
                 children: <Widget>[
                   if (result != null)
                     Text(
-                        'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
+                      'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}',
+                    )
                   else
                     const Text('Scan a code'),
                   Row(
@@ -149,8 +153,6 @@ class _QRViewExampleState extends State<QRViewExample> {
             MediaQuery.of(context).size.height < 400)
         ? 150.0
         : 300.0;
-    // To ensure the Scanner view is properly sizes after rotation
-    // we need to listen for Flutter SizeChanged notification and update controller
     return QRView(
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
@@ -172,6 +174,15 @@ class _QRViewExampleState extends State<QRViewExample> {
       setState(() {
         result = scanData;
       });
+      if (result != null && result!.code != null) {
+        controller.pauseCamera();
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SecondView(data: result!.code ?? 'No data'),
+          ),
+        );
+      }
     });
   }
 
@@ -182,5 +193,39 @@ class _QRViewExampleState extends State<QRViewExample> {
         const SnackBar(content: Text('no Permission')),
       );
     }
+  }
+}
+
+class SecondView extends StatelessWidget {
+  final String data;
+
+  const SecondView({
+    super.key,
+    required this.data,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'QR Result',
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'Scanned URL: $data',
+              style: TextStyle(
+                fontSize: 24,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
