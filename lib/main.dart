@@ -5,27 +5,23 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
-void main() => runApp(const MaterialApp(home: MyHome()));
+void main() => runApp(const MaterialApp(home: QRViewExample()));
 
-class MyHome extends StatelessWidget {
-  const MyHome({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('QR Scan')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const QRViewExample(),
-            ));
-          },
-          child: const Text('Scan'),
-        ),
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(title: const Text('QR Scan')),
+    body: Center(
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const QRViewExample(),
+          ));
+        },
+        child: const Text('Scan'),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class QRViewExample extends StatefulWidget {
@@ -218,7 +214,7 @@ class SecondView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Scanned URL: $data',
+              data,
               style: TextStyle(
                 fontSize: 24,
               ),
